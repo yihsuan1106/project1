@@ -1,8 +1,8 @@
 import random
 from colorama import Fore,Back
 print(Back.YELLOW, Fore.BLUE + "Tips:\ninput 'check!' can browse the words that you have writen before" + Back.RESET)
-i, count = 0, 0
-w = open('/Users/hsuan./Desktop/410410096/30/410410096/wordlekey.json','r+')
+i, count, c, cc, ss= 0, 0, 0, 0, 0
+w = open('words_alpha.txt','r+')
 key = w.read()
 w.close
 key=list(key.split('\n'))
@@ -15,17 +15,17 @@ while True:
     if len(answer) == long:
         break
 
-#print(answer)
+print(answer)
 
 
 while i <= (circle-1):
     print('')
     if (circle-1) == 0:
-        print(Fore.BLACK + "You have %d chance" % (circle-i))
+        print(Fore.RESET + "You have %d chance" % (circle-i))
     else:
-        print(Fore.BLACK + "You have %d chances" % (circle-i))
+        print(Fore.RESET + "You have %d chances" % (circle-i))
 
-    a = input("GUESS！\n")
+    a = input("GUESS!\n")
     if a == 'check!' or a =='Check!':
         print("----------------")
         for j in range(i):
@@ -33,7 +33,21 @@ while i <= (circle-1):
                 if before[j][o] == answer[o]:
                     print(Fore.GREEN + before[j][o], end='')
                 elif before[j][o] in answer:
-                    print(Fore.BLUE + before[j][o], end='')
+                    c, cc, ss = 0, 0, 0
+                    for j in range(long):
+                        if answer[j] == a[o]:
+                            ss +=1
+                        if a[j] in answer:
+                            if a[j] == answer[j]:
+                                cc += 1
+                    for j in range(long):
+                        if o == j:
+                            if (ss-cc-c)>0:
+                                print(Fore.BLUE + a[o], end='')
+                            else:
+                                print(Fore.LIGHTWHITE_EX + a[o], end='')
+                        if a[j] in answer and a[j] == a[o]:
+                            c+=1
                 else:
                     print(Fore.LIGHTWHITE_EX + before[j][o], end='')
             print('')
@@ -54,8 +68,23 @@ while i <= (circle-1):
             before[i][o] = a[o]
             count += 1
         elif a[o] in answer:
-            print(Fore.BLUE + a[o], end='')
-            before[i][o] = a[o]
+            c, cc, ss = 0, 0, 0
+            for j in range(long):
+                if answer[j] == a[o]:
+                    ss +=1
+                if a[j] == answer[j]:
+                        cc += 1
+            for j in range(long):
+                if o == j:
+                    #print(ss,cc,c)
+                    if (ss-cc-c)>0:
+                        print(Fore.BLUE + a[o], end='')
+                        before[i][o] = a[o]
+                    else:
+                        print(Fore.LIGHTWHITE_EX + a[o], end='')
+                        before[i][o] = a[o]
+                if a[j] in answer and a[j] == a[o]:
+                    c+=1
         else:
             print(Fore.LIGHTWHITE_EX + a[o], end='')
             before[i][o] = a[o]
