@@ -1,0 +1,73 @@
+import random
+from colorama import Fore,Back
+print(Back.YELLOW, Fore.BLUE + "Tips:\ninput 'check!' can browse the words that you have writen before" + Back.RESET)
+i, count = 0, 0
+w = open('/Users/hsuan./Desktop/410410096/30/410410096/wordlekey.json','r+')
+key = w.read()
+w.close
+key=list(key.split('\n'))
+long = int(input(Fore.RESET + "Letter Length: "))
+circle = int(input("Chance: "))
+
+before = [[None]*long for j in range(circle)]
+while True:
+    answer = random.choice(key)
+    if len(answer) == long:
+        break
+
+#print(answer)
+
+
+while i <= (circle-1):
+    print('')
+    if (circle-1) == 0:
+        print(Fore.BLACK + "You have %d chance" % (circle-i))
+    else:
+        print(Fore.BLACK + "You have %d chances" % (circle-i))
+
+    a = input("GUESS！\n")
+    if a == 'check!' or a =='Check!':
+        print("----------------")
+        for j in range(i):
+            for o in range(long):
+                if before[j][o] == answer[o]:
+                    print(Fore.GREEN + before[j][o], end='')
+                elif before[j][o] in answer:
+                    print(Fore.BLUE + before[j][o], end='')
+                else:
+                    print(Fore.LIGHTWHITE_EX + before[j][o], end='')
+            print('')
+        print(Fore.RESET + "----------------")
+        continue
+    if len(a) != long:
+        print("NumberError")
+        print(i)
+        continue
+    elif a not in key:
+        print("Not exist")
+        continue
+    count =0
+    print("->",end='')
+    for o in range(long):
+        if a[o] == answer[o]:
+            print(Fore.GREEN + a[o], end='')
+            before[i][o] = a[o]
+            count += 1
+        elif a[o] in answer:
+            print(Fore.BLUE + a[o], end='')
+            before[i][o] = a[o]
+        else:
+            print(Fore.LIGHTWHITE_EX + a[o], end='')
+            before[i][o] = a[o]
+    print('')
+        
+    i+=1
+
+    
+    if count == len(answer):
+        print(Fore.LIGHTRED_EX + "!!!CONGRATULATIONS!!!")
+        break
+
+
+if count != len(answer):
+    print(Fore.LIGHTMAGENTA_EX + 'Bye ~ ~ ~')      
