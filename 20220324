@@ -1,0 +1,96 @@
+import json
+import random
+import time
+from colorama import Fore
+f=open ('words_dictionary.json',mode='r')
+data=json.loads(f.read())
+f.close()
+line=list(data)
+def game():
+    ll=int(input('請輸入題目長度 : '))
+    ans=random.choice(line)
+    while len(ans)!=ll:
+        ans=random.choice(line)
+    times=int(input('請輸入容許失敗次數 : '))
+    def printf(t):
+        for i in range(times):
+            for j in range(l):
+                if t[i][j] == 0:
+                    print(Fore.WHITE + '[',Fore.BLUE + test[i][j],Fore.WHITE + ']',sep='',end='')
+                if t[i][j] == 1:
+                    print(Fore.WHITE + '[',Fore.GREEN + test[i][j],Fore.WHITE + ']',sep='',end='')
+                if t[i][j] == 2:
+                    print(Fore.WHITE + '[',Fore.RED + test[i][j],Fore.WHITE + ']',sep='',end='') 
+                if t[i][j] == 3:
+                    print(Fore.WHITE + '[',Fore.YELLOW + test[i][j],Fore.WHITE + ']',sep='',end='')   
+            print()
+    print(ans)
+    l=len(ans)
+    test=[[' ']*l for i in range(times)]
+    t=[[0]*l for i in range(times)]
+    printf(t)
+    start=time.time()
+    print('認輸請輸入\"投降\"')
+    wrong=0
+    i=0
+    while i<times:
+        word=input('請輸入答案 : ')
+        conti=[]
+        correct={'a':0,'b':0,'c':0,'d':0,'e':0,'f':0,'g':0,'h':0,'i':0,'j':0,'k':0,'l':0,'m':0,'n':0,'o':0,'p':0,'q':0,'r':0,'s':0,'t':0,'u':0,'v':0,'w':0,'x':0,'y':0,'z':0}
+        if word =='投降':
+            end=time.time()
+            print('You lose!!')
+            print('answer is',ans)
+            print('使用時間 : ',round(end-start,3),'秒',sep='')
+            break
+        if word not in line:
+            print('Not in dictionary')
+            continue
+        if len(word)>l:
+            print('Too long')
+            continue
+        elif len(word)<l:
+            print('Too short')
+            continue
+        for j in range(l):
+            test[i][j]=word[j]
+            conti.append(1)
+        for j in range(l):
+            if word[j] == ans[j]:
+                if correct[word[j]] < ans.count(word[j]):
+                    t[i][j]=1
+                    correct[word[j]]+=1
+                    conti[j]=0
+                else:
+                    t[i][j]=2
+                    conti[j]=0
+        for j in range(l):
+            if conti[j]:
+                if word[j] in ans:
+                    if correct[word[j]] < ans.count(word[j]):
+                        t[i][j]=3
+                        correct[word[j]]+=1
+                    else:
+                        t[i][j]=2
+                else:
+                    t[i][j]=2
+        printf(t)
+        if word == ans:
+            end=time.time()
+            print('You win!!')
+            print('使用時間 : ',round(end-start,3),'秒',sep='')
+            break
+        wrong+=1
+        if wrong == times:
+            end=time.time()
+            print('You lose!!')
+            print('answer is',ans)
+            print('使用時間 : ',round(end-start,3),'秒',sep='')
+            break
+        i+=1
+while True:
+    game()
+    newgame = input('是否繼續遊戲? (y/n) ')
+    if newgame=='n':
+        print('遊戲結束!!')
+        break
