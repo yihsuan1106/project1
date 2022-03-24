@@ -1,96 +1,102 @@
-import json
 import random
-import time
-from colorama import Fore
-f=open ('words_dictionary.json',mode='r')
-data=json.loads(f.read())
-f.close()
-line=list(data)
-def game():
-    ll=int(input('請輸入題目長度 : '))
-    ans=random.choice(line)
-    while len(ans)!=ll:
-        ans=random.choice(line)
-    times=int(input('請輸入容許失敗次數 : '))
-    def printf(t):
-        for i in range(times):
-            for j in range(l):
-                if t[i][j] == 0:
-                    print(Fore.WHITE + '[',Fore.BLUE + test[i][j],Fore.WHITE + ']',sep='',end='')
-                if t[i][j] == 1:
-                    print(Fore.WHITE + '[',Fore.GREEN + test[i][j],Fore.WHITE + ']',sep='',end='')
-                if t[i][j] == 2:
-                    print(Fore.WHITE + '[',Fore.RED + test[i][j],Fore.WHITE + ']',sep='',end='') 
-                if t[i][j] == 3:
-                    print(Fore.WHITE + '[',Fore.YELLOW + test[i][j],Fore.WHITE + ']',sep='',end='')   
-            print()
-    print(ans)
-    l=len(ans)
-    test=[[' ']*l for i in range(times)]
-    t=[[0]*l for i in range(times)]
-    printf(t)
-    start=time.time()
-    print('認輸請輸入\"投降\"')
-    wrong=0
-    i=0
-    while i<times:
-        word=input('請輸入答案 : ')
-        conti=[]
-        correct={'a':0,'b':0,'c':0,'d':0,'e':0,'f':0,'g':0,'h':0,'i':0,'j':0,'k':0,'l':0,'m':0,'n':0,'o':0,'p':0,'q':0,'r':0,'s':0,'t':0,'u':0,'v':0,'w':0,'x':0,'y':0,'z':0}
-        if word =='投降':
-            end=time.time()
-            print('You lose!!')
-            print('answer is',ans)
-            print('使用時間 : ',round(end-start,3),'秒',sep='')
-            break
-        if word not in line:
-            print('Not in dictionary')
-            continue
-        if len(word)>l:
-            print('Too long')
-            continue
-        elif len(word)<l:
-            print('Too short')
-            continue
-        for j in range(l):
-            test[i][j]=word[j]
-            conti.append(1)
-        for j in range(l):
-            if word[j] == ans[j]:
-                if correct[word[j]] < ans.count(word[j]):
-                    t[i][j]=1
-                    correct[word[j]]+=1
-                    conti[j]=0
-                else:
-                    t[i][j]=2
-                    conti[j]=0
-        for j in range(l):
-            if conti[j]:
-                if word[j] in ans:
-                    if correct[word[j]] < ans.count(word[j]):
-                        t[i][j]=3
-                        correct[word[j]]+=1
-                    else:
-                        t[i][j]=2
-                else:
-                    t[i][j]=2
-        printf(t)
-        if word == ans:
-            end=time.time()
-            print('You win!!')
-            print('使用時間 : ',round(end-start,3),'秒',sep='')
-            break
-        wrong+=1
-        if wrong == times:
-            end=time.time()
-            print('You lose!!')
-            print('answer is',ans)
-            print('使用時間 : ',round(end-start,3),'秒',sep='')
-            break
-        i+=1
+from colorama import Fore,Back
+print(Back.YELLOW, Fore.BLUE + "Tips:\ninput 'check!' can browse the words that you have writen before" + Back.RESET)
+i, count, c, cc, ss= 0, 0, 0, 0, 0
+w = open('words_alpha.txt','r+')
+key = w.read()
+w.close
+key=list(key.split('\n'))
+long = int(input(Fore.RESET + "Letter Length: "))
+circle = int(input("Chance: "))
+
+before = [[' ']*long for j in range(circle)]
 while True:
-    game()
-    newgame = input('是否繼續遊戲? (y/n) ')
-    if newgame=='n':
-        print('遊戲結束!!')
+    answer = random.choice(key)
+    if len(answer) == long:
         break
+
+print(answer)
+
+
+while i <= (circle-1):
+    print('')
+    if (circle-1) == 0:
+        print(Fore.RESET + "You have %d chance" % (circle-i))
+    else:
+        print(Fore.RESET + "You have %d chances" % (circle-i))
+
+    a = input("GUESS!\n")
+    if a == 'check!' or a =='Check!':
+        print(before)
+        print("----------------")
+        for j in range(i):
+            for o in range(long):
+                if before[j][o] == answer[o]:
+                    print(Fore.GREEN + before[j][o], end='')
+                elif before[j][o] in answer:
+                    c, cc, ss = 0, 0, 0
+                    for k in range(long):
+                        if before[j][o] == answer[k]:
+                            ss +=1
+                        if answer[k] == before[j][k] and before[j][k] == before[j][o]:
+                                cc += 1
+                    for k in range(long):
+                        if o == k:
+                            if (ss-cc-c)>0:
+                                print(Fore.BLUE + before[j][o], end='')
+                            else:
+                                print(Fore.LIGHTWHITE_EX + before[j][o], end='')
+                        if before[j][k] in answer and before[j][k] == before[j][o]:
+                            c+=1
+                else:
+                    print(Fore.LIGHTWHITE_EX + before[j][o], end='')
+            print('')
+        print(Fore.RESET + "----------------")
+        continue
+    if len(a) != long:
+        print("NumberError")
+        print(i)
+        continue
+    elif a not in key:
+        print("Not exist")
+        continue
+    count =0
+    print("->",end='')
+    for o in range(long):
+        if a[o] == answer[o]:
+            print(Fore.GREEN + a[o], end='')
+            before[i][o] = a[o]
+            count += 1
+        elif a[o] in answer:
+            c, cc, ss = 0, 0, 0
+            for j in range(long):
+                if answer[j] == a[o]:
+                    ss +=1
+                if a[j] == answer[j]and a[j] == a[o]:
+                    cc += 1
+            for j in range(long):
+                if o == j:
+                    #print(ss,cc,c)
+                    if (ss-cc-c)>0:
+                        print(Fore.BLUE + a[o], end='')
+                        before[i][o] = a[o]
+                    else:
+                        print(Fore.LIGHTWHITE_EX + a[o], end='')
+                        before[i][o] = a[o]
+                if a[j] in answer and a[j] == a[o]:
+                    c+=1
+        else:
+            print(Fore.LIGHTWHITE_EX + a[o], end='')
+            before[i][o] = a[o]
+    print('')
+        
+    i+=1
+
+    
+    if count == len(answer):
+        print(Fore.LIGHTRED_EX + "!!!CONGRATULATIONS!!!")
+        break
+
+
+if count != len(answer):
+    print(Fore.LIGHTMAGENTA_EX + 'Bye ~ ~ ~')      
