@@ -1,0 +1,119 @@
+import random
+import time
+from colorama import Fore,Back
+print(Back.YELLOW, Fore.BLUE + "Tips:\n1. input 'check!' can browse the words that you have writen before\n2. input 'surrender..' can end this turn" + Back.RESET)
+
+w = open('words_alpha.txt','r+')
+key = w.read()
+w.close
+key=list(key.split('\n'))
+
+
+
+while True:
+    i, count, c, cc, ss= 0, 0, 0, 0, 0
+    long = int(input(Fore.RESET + "Letter Length: "))
+    circle = int(input("Chance: "))
+   #print(circle)
+
+    before = [[None]*long for j in range(circle)]
+    while True:
+        answer = random.choice(key)
+        if len(answer) == long:
+            break
+
+    print(answer)
+
+    start = time.time()
+
+    while i <= (circle-1):
+        print('')
+        if (circle-1) == 0:
+            print(Fore.RESET + "You have %d chance" % (circle-i))
+        else:
+            print(Fore.RESET + "You have %d chances" % (circle-i))
+
+        a = input("GUESS!\n")
+        if a == 'surrender--' or a =='Surrender--':
+            break
+        if a == 'check!' or a =='Check!':
+            print(before)
+            print("----------------")
+            for j in range(i):
+                for o in range(long):
+                    if before[j][o] == answer[o]:
+                        print(Fore.GREEN + before[j][o], end='')
+                    elif before[j][o] in answer:
+                        c, cc, ss = 0, 0, 0
+                        for k in range(long):
+                            if before[j][o] == answer[k]:
+                                ss +=1
+                            if answer[k] == before[j][k] and before[j][k] == before[j][o]:
+                                cc += 1
+                        for k in range(long):
+                            if o == k:
+                                if (ss-cc-c)>0:
+                                    print(Fore.BLUE + before[j][o], end='')
+                                else:
+                                    print(Fore.LIGHTWHITE_EX + before[j][o], end='')
+                            if before[j][k] in answer and before[j][k] == before[j][o]:
+                                c+=1
+                    else:
+                        print(Fore.LIGHTWHITE_EX + before[j][o], end='')
+                print('')
+            print(Fore.RESET + "----------------")
+            continue
+        if len(a) != long:
+            print("NumberError")
+            continue
+        elif a not in key:
+            print("Not exist")
+            continue
+        count =0
+        print("->",end='')
+        for o in range(long):
+            if a[o] == answer[o]:
+                print(Fore.GREEN + a[o], end='')
+                before[i][o] = a[o]
+                count += 1
+            elif a[o] in answer:
+                c, cc, ss = 0, 0, 0
+                for j in range(long):
+                    if answer[j] == a[o]:
+                        ss +=1
+                    if a[j] == answer[j]and a[j] == a[o]:
+                        cc += 1
+                for j in range(long):
+                    if o == j:
+                        #print(ss,cc,c)
+                        if (ss-cc-c)>0:
+                            print(Fore.BLUE + a[o], end='')
+                            before[i][o] = a[o]
+                        else:
+                            print(Fore.LIGHTWHITE_EX + a[o], end='')
+                            before[i][o] = a[o]
+                    if a[j] in answer and a[j] == a[o]:
+                        c+=1
+            else:
+                print(Fore.LIGHTWHITE_EX + a[o], end='')
+                before[i][o] = a[o]
+        print('')
+        
+        i+=1
+
+    
+        if count == len(answer):
+            print(Fore.LIGHTRED_EX + "!!!CONGRATULATIONS!!!")
+            end = time.time()
+            print(Fore.LIGHTMAGENTA_EX + "spend times: ", end='')
+            print(round(end-start, 2))
+            break
+
+
+    if count != len(answer):
+        print(Fore.LIGHTMAGENTA_EX + 'Bye ~ ~ ~')
+        print(Fore.LIGHTMAGENTA_EX + "Answer: %s" %answer)
+
+    ansss = input(Fore.RESET + "play again? y/n\n")
+    if ansss == 'N' or ansss == 'n':
+        break
