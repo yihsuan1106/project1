@@ -3,7 +3,7 @@ import time
 from colorama import Fore,Back
 print(Back.YELLOW, Fore.BLUE + "Tips:\n1. input 'check!' can browse the words that you have writen before\n2. input 'surrender..' can end this turn" + Back.RESET)
 
-w = open('words_alpha.txt','r+')
+w = open('/Users/hsuan./Desktop/410410096/30/410410096/wordlekey.json','r+')
 key = w.read()
 w.close
 key=list(key.split('\n'))
